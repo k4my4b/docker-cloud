@@ -1,0 +1,6 @@
+FROM nextcloud:production-fpm-alpine
+
+ENV PHP_MEMORY_LIMIT 1024M 
+ENV PHP_UPLOAD_LIMIT 10G 
+ENV PHP_MAX_TIME 3600
+
