@@ -1,23 +1,24 @@
 services:
   nextcloud:
-    image: nextcloud:production-fpm-alpine
+    build:
+      context: ./nextcloud
     container_name: nextcloud-fpm
     restart: unless-stopped
-    depends_on: 
+    depends_on:
       postgres:
         condition: service_healthy
-      redis: 
-        condition: service_healthy  
+      redis:
+        condition: service_healthy
     networks:
       - nextcloud
     volumes:
       - nextcloud:/var/www/html
     env_file:
-      - db.env 
+      - db.env
       - nc.env
-    
+
   postgres:
-    image: postgres:alpine 
+    image: postgres:alpine
     container_name: postgres
     restart: unless-stopped
     stop_grace_period: 1800s
@@ -28,22 +29,22 @@ services:
     env_file:
       - db.env
     healthcheck:
-      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -t 1 
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -t 1
       interval: 5s
       timeout: 10s
       retries: 120
 
   redis:
-    image: redis:alpine 
+    image: redis:alpine
     container_name: redis
-    restart: unless-stopped 
+    restart: unless-stopped
     networks:
       - nextcloud
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
-      interval: 5s 
-      timeout: 3s 
-      retries: 5 
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
       start_period: 10s
 
   nginx:
@@ -57,16 +58,16 @@ services:
     networks:
       - nextcloud
     ports:
-      - 8080:80 
+      - 8080:80
     volumes:
       - nextcloud:/var/www/html:ro
     healthcheck:
       test: curl -fsL localhost | grep nextcloud
       interval: 1m30s
-      timeout: 10s 
+      timeout: 10s
       retries: 3
       start_period: 15s
-        
+
 volumes:
   nextcloud:
     name: nextcloud
