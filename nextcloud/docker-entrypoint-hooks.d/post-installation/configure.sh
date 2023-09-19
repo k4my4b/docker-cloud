@@ -13,6 +13,7 @@ php occ app:enable twofactor_totp
 php occ app:enable suspicious_login
 php occ app:enable files_external
 php occ app:enable admin_audit
+php occ app:install impersonate
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
