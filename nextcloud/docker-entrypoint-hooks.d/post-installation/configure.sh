@@ -3,6 +3,7 @@
 # apps
 php occ app:disable firstrunwizard
 php occ app:disable dashboard
+php occ app:disable support
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
