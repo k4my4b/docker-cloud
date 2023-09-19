@@ -10,6 +10,7 @@ php occ app:disable weather_status
 php occ app:disable nextcloud_announcements
 php occ app:disable updatenotification
 php occ app:disable logreader
+php occ app:disable serverinfo
 php occ app:enable twofactor_totp
 php occ app:enable suspicious_login
 php occ app:enable files_external
