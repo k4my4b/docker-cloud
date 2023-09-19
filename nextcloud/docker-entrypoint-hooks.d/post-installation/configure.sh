@@ -33,3 +33,4 @@ php occ config:system:set --type=string --value="$FORCE_LANGUAGE" -- force_langu
 php occ config:system:set --type=string --value="$FORCE_LOCALE" -- force_locale
 php occ config:system:set --type=string --value="$THEME" -- theme 
 php occ config:app:set --value="$TALK_CHANGELOG" -- spreed changelog
+php occ twofactorauth:enforce "$([ $ENFORCE_TWOFACTORAUTH ] && echo --on || echo --off)"
