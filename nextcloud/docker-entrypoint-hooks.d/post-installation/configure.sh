@@ -17,6 +17,7 @@ php occ app:install impersonate
 php occ app:install groupfolders
 php occ app:install deck
 php occ app:install forms
+php occ app:install terms_of_service
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
