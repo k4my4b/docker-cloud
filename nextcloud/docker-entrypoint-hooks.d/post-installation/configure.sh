@@ -38,3 +38,5 @@ php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || ech
 php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceNumericCharacters
 php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceSpecialCharacters
 php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 10 || echo 0)" -- password_policy maximumLoginAttempts
+php occ config:app:set --value="$([ $ENABLE_NOTIFICATION_SOUND ] && echo yes || echo no)" -- notifications sound_notification
+php occ config:app:set --value="$([ $ENABLE_NOTIFICATION_SOUND ] && echo yes || echo no)" -- notifications sound_talk
