@@ -7,6 +7,7 @@ php occ app:disable support
 php occ app:disable survey_client
 php occ app:disable federation
 php occ app:disable weather_status
+php occ app:disable nextcloud_announcements
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
