@@ -34,3 +34,7 @@ php occ config:system:set --type=string --value="$FORCE_LOCALE" -- force_locale
 php occ config:system:set --type=string --value="$THEME" -- theme 
 php occ config:app:set --value="$TALK_CHANGELOG" -- spreed changelog
 php occ twofactorauth:enforce "$([ $ENFORCE_TWOFACTORAUTH ] && echo --on || echo --off)"
+php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceUpperLowerCase
+php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceNumericCharacters
+php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceSpecialCharacters
+php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 10 || echo 0)" -- password_policy maximumLoginAttempts
