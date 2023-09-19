@@ -10,6 +10,7 @@ php occ app:disable weather_status
 php occ app:disable nextcloud_announcements
 php occ app:disable updatenotification
 php occ app:enable twofactor_totp
+php occ app:enable suspicious_login
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
