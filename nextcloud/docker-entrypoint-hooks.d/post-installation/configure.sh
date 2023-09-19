@@ -32,7 +32,7 @@ php occ config:system:set --type=string --value="$DEFAULT_PHONE_REGION" -- defau
 php occ config:system:set --type=string --value="$FORCE_LANGUAGE" -- force_language 
 php occ config:system:set --type=string --value="$FORCE_LOCALE" -- force_locale
 php occ config:system:set --type=string --value="$THEME" -- theme 
-php occ config:app:set --value="$TALK_CHANGELOG" -- spreed changelog
+php occ config:app:set --value="$([ $ENABLE_TALK_CHANGELOG ] && echo yes || echo no)" -- spreed changelog
 php occ twofactorauth:enforce "$([ $ENFORCE_TWOFACTORAUTH ] && echo --on || echo --off)"
 php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceUpperLowerCase
 php occ config:app:set --value="$([ $HARDENED_PASSWORD_POLICY ] && echo 1 || echo 0)" -- password_policy enforceNumericCharacters
