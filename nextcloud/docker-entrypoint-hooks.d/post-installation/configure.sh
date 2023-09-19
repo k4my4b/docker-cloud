@@ -10,3 +10,4 @@ php occ config:system:set --type=string --value="$SKELETON_DIRECTORY" -- skeleto
 php occ config:system:set --type=string --value="$DEFAULT_PHONE_REGION" -- default_phone_region 
 php occ config:system:set --type=string --value="$FORCE_LANGUAGE" -- force_language 
 php occ config:system:set --type=string --value="$FORCE_LOCALE" -- force_locale
+php occ config:system:set --type=string --value="$THEME" -- theme 
