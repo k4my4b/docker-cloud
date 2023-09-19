@@ -22,6 +22,7 @@ php occ app:install calendar
 php occ app:install contacts
 php occ app:install mail
 php occ app:install spreed
+php occ app:install quota_warning
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
