@@ -14,4 +14,5 @@ ENV PHP_MEMORY_LIMIT=1024M \
     DEFAULT_PHONE_REGION="GB" \ 
     FORCE_LANGUAGE="en_GB" \
     FORCE_LOCALE="en_GB" \
-    THEME="example"
+    THEME="example" \
+    TALK_CHANGELOG=no
