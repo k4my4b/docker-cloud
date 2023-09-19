@@ -15,6 +15,7 @@ php occ app:enable files_external
 php occ app:enable admin_audit
 php occ app:install impersonate
 php occ app:install groupfolders
+php occ app:install deck
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
