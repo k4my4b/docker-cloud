@@ -19,6 +19,7 @@ php occ app:install deck
 php occ app:install forms
 php occ app:install terms_of_service
 php occ app:install calendar 
+php occ app:install contacts
 
 # config 
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web 
