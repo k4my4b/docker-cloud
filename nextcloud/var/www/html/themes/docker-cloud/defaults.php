@@ -80,8 +80,8 @@ class OC_Theme
 	 * Returns long version of the footer
 	 * @return string long footer
 	 */
-	{
 	public function getLongFooter()
+	{
 		return $this->getShortFooter();
 	}
 
