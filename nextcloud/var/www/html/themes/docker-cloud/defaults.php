@@ -70,7 +70,7 @@ class OC_Theme
 	 */
 	public function getShortFooter()
 	{
-		$footer = '© ' . date('Y') . ' <a href="' . $this->getBaseUrl() . 
+		$footer = '© ' . date('Y') . ' <a href="' . $this->getBaseUrl() .
 			'" target="_blank">' . $this->getEntity() . '</a>' . '<br/>' . $this->getSlogan();
 
 		return $footer;
@@ -93,7 +93,6 @@ class OC_Theme
 	{
 		return $this->getDocBaseUrl() . '/server/15/go.php?to=' . $key;
 	}
-
 
 	/**
 	 * Returns mail header color
