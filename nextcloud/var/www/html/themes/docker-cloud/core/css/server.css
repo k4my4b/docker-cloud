@@ -1,3 +1,7 @@
+:root {
+  --image-background: no;
+}
+
 body::before {
   content: "";
   position: absolute;
