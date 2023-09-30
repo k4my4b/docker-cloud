@@ -1,6 +1,7 @@
 FROM nextcloud:production-fpm-alpine
 
 COPY --chmod=775 docker-entrypoint-hooks.d /docker-entrypoint-hooks.d
+COPY --chown=82:82 var/www/html /var/www/html
 
 ENV PHP_MEMORY_LIMIT=512M \
     PHP_UPLOAD_LIMIT=10G \
@@ -13,7 +14,7 @@ ENV PHP_MEMORY_LIMIT=512M \
     DEFAULT_PHONE_REGION="GB" \ 
     FORCE_LANGUAGE="en_GB" \
     FORCE_LOCALE="en_GB" \
-    THEME="example" \
+    THEME="docker-cloud" \
     ENABLE_TALK_CHANGELOG=false \
     ENFORCE_TWOFACTORAUTH=true \
     HARDENED_PASSWORD_POLICY=true \

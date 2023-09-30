@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<svg
+   fill="#ffffff"
+   width="618.99487"
+   height="367.8605"
+   viewBox="0 -8 55.709539 33.107445"
+   id="Layer_1"
+   data-name="Layer 1"
+   version="1.1"
+   sodipodi:docname="logo.svg"
+   xml:space="preserve"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1" /><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true"
+     inkscape:zoom="1.6778991"
+     inkscape:cx="167.47134"
+     inkscape:cy="84.629643"
+     inkscape:window-width="2560"
+     inkscape:window-height="1522"
+     inkscape:window-x="0"
+     inkscape:window-y="36"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" /><title
+     id="title1">docker-cloud</title><path
+     id="path1"
+     d="M 30.824246,-5.0846807 A 11.243743,11.243743 0 0 0 20.185671,4.0230237 h -0.428616 a 9.0675344,9.0675344 0 0 0 -8.688363,6.4463213 h -0.52758 a 5.8691677,5.8691677 0 0 0 0,11.729962 h 31.901236 a 8.3998342,8.3998342 0 0 0 0,-16.7995857 V 5.3666825 A 11.243743,11.243743 0 0 0 30.824246,-5.0846807 Z m 0.513235,7.1651715 c 0.13412,0 0.268296,0.033739 0.389349,0.100995 L 38.552501,5.9733797 35.794036,7.5058451 28.579164,3.4974696 30.948135,2.181486 C 31.069186,2.114229 31.203364,2.0804908 31.337481,2.0804908 Z M 26.880932,4.436134 34.095803,8.4443642 31.337481,9.9768295 24.122465,5.9685993 Z m -3.560055,2.9211886 7.214872,4.0083744 v 8.016606 l -6.80263,-3.779288 c -0.254505,-0.141414 -0.412242,-0.409574 -0.412242,-0.700737 z m 16.033211,0 v 7.5449554 c 0,0.291163 -0.157857,0.559323 -0.412387,0.700737 l -6.802631,3.779288 v -8.016606 z"
+     style="stroke-width:0.824323"
+/></svg>

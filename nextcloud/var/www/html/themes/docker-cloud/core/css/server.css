@@ -1,0 +1,60 @@
+:root {
+  --image-background: no;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-main-background-blur);
+  backdrop-filter: var(--filter-background-blur, none);
+}
+
+#body-login .wrapper,
+#body-login footer {
+  z-index: 1;
+  color: var(--color-main-text);
+}
+
+header#header {
+  background-color: var(--color-background-plain, var(--color-main-background)) !important;
+}
+
+#header .logo {
+  background-image: url("../img/logo.svg");
+}
+
+#body-login #header .logo {
+  filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.2));
+}
+
+#content,
+#content-vue {
+  width: 100% !important;
+  height: calc(100% - env(safe-area-inset-bottom) - 50px) !important;
+  border-radius: 0px !important;
+  margin: 50px 0 0 0 !important;
+}
+
+#app-navigation-vue,
+#app-navigation,
+#app-navigation:not(.vue) {
+  background: transparent;
+  backdrop-filter: unset;
+  border-radius: 0px !important;
+}
+
+@media only screen and (max-width: 1024px) {
+  #app-navigation-vue,
+  #app-navigation,
+  #app-navigation:not(.vue) {
+    background: var(--color-main-background);
+    box-shadow: -5px 0px 15px 0px black;
+  }
+  .app-navigation--close {
+    box-shadow: none !important;
+  }
+}
