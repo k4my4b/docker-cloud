@@ -16,6 +16,14 @@ ENV PHP_MEMORY_LIMIT=512M \
     FORCE_LOCALE="en_GB" \
     THEME="docker-cloud" \
     ENABLE_TALK_CHANGELOG=false \
-    ENFORCE_TWOFACTORAUTH=true \
+    ENFORCE_TWOFACTORAUTH=false \
     HARDENED_PASSWORD_POLICY=true \
     ENABLE_NOTIFICATION_SOUND=true
+
+RUN apk add --no-cache samba-client && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS autoconf samba-dev && \
+    pecl install smbclient && \
+    docker-php-ext-enable smbclient && \
+    apk del .build-deps
+
+    
