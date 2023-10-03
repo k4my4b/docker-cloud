@@ -28,7 +28,7 @@ header#header {
 }
 
 #body-login #header .logo {
-  filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 0 5px var(--color-box-shadow));
 }
 
 #content,
