@@ -9,6 +9,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      clamav:
+        condition: service_healthy
     networks:
       - nextcloud
     volumes:
@@ -67,6 +69,13 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
+  
+  clamav:
+    image: clamav/clamav:stable
+    container_name: clamav
+    restart: unless-stopped
+    networks:
+      - nextcloud
 
 volumes:
   nextcloud:
