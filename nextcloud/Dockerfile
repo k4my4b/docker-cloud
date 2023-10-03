@@ -18,7 +18,11 @@ ENV PHP_MEMORY_LIMIT=512M \
     ENABLE_TALK_CHANGELOG=false \
     ENFORCE_TWOFACTORAUTH=true \
     HARDENED_PASSWORD_POLICY=true \
-    ENABLE_NOTIFICATION_SOUND=true
+    ENABLE_NOTIFICATION_SOUND=true \
+    AV_HOST=clamav \
+    AV_PORT=3310 \
+    AV_STREAM_MAX_LENGTH=104857600 \
+    AV_MAX_FILE_SIZE=104857600 
 
 RUN apk add --no-cache samba-client && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS autoconf samba-dev && \
