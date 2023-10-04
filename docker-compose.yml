@@ -71,6 +71,13 @@ services:
     networks:
       - nextcloud
 
+  imaginary:
+    image: nextcloud/aio-imaginary:latest
+    container_name: imaginary
+    restart: unless-stopped
+    networks:
+      - nextcloud
+
 volumes:
   nextcloud:
     name: nextcloud
