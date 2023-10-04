@@ -22,7 +22,9 @@ ENV PHP_MEMORY_LIMIT=512M \
     AV_HOST=clamav \
     AV_PORT=3310 \
     AV_STREAM_MAX_LENGTH=104857600 \
-    AV_MAX_FILE_SIZE=104857600 
+    AV_MAX_FILE_SIZE=104857600 \
+    IMAGINARY_HOST=imaginary \
+    IMAGINARY_PORT=9000
 
 RUN apk add --no-cache samba-client && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS autoconf samba-dev && \
