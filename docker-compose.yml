@@ -63,12 +63,6 @@ services:
       - 8080:80
     volumes:
       - nextcloud:/var/www/html:ro
-    healthcheck:
-      test: curl -fsL localhost | grep nextcloud
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
   
   clamav:
     image: clamav/clamav:stable
