@@ -30,4 +30,5 @@ RUN apk add --no-cache samba-client && \
     docker-php-ext-enable smbclient && \
     apk del .build-deps
 
-    
+HEALTHCHECK --interval=30s --timeout=3s --start-period=300s --retries=3 \
+    CMD nc -z localhost 9000 || exit 1

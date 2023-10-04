@@ -23,4 +23,5 @@ ENV CLIENT_MAX_BODY_SIZE=0 \
 
 COPY nextcloud.conf /etc/nginx/templates/default.conf.template 
 
-HEALTHCHECK --interval=5s --timeout=3s CMD curl -sfL http://localhost:80 || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+    CMD curl -sfL http://localhost/status.php || exit 1
