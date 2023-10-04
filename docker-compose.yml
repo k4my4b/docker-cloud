@@ -56,7 +56,7 @@ services:
     restart: unless-stopped
     depends_on:
       nextcloud:
-        condition: service_started
+        condition: service_healthy
     networks:
       - nextcloud
     ports:
