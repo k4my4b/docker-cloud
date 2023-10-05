@@ -20,6 +20,7 @@ body::before {
 }
 
 header#header {
+  height: var(--header-height) !important;
   background-color: var(--color-background-plain, var(--color-main-background)) !important;
 }
 
@@ -34,9 +35,9 @@ header#header {
 #content,
 #content-vue {
   width: 100% !important;
-  height: calc(100% - env(safe-area-inset-bottom) - 50px) !important;
+  height: calc(100% - env(safe-area-inset-bottom) - var(--header-height)) !important;
   border-radius: 0px !important;
-  margin: 50px 0 0 0 !important;
+  margin: var(--header-height) 0 0 0 !important;
 }
 
 #app-navigation-vue,
