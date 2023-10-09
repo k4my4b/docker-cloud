@@ -26,6 +26,9 @@ php occ app:install mail
 php occ app:install spreed
 php occ app:install quota_warning
 php occ app:install files_antivirus
+php occ app:install fulltextsearch
+php occ app:install fulltextsearch_elasticsearch
+php occ app:install files_fulltextsearch
 
 # config
 php occ config:system:set --type=boolean --value="$DISABLE_WEB_UPGRADE" -- upgrade.disable-web
@@ -50,3 +53,7 @@ php occ config:app:set --value="$AV_HOST" -- files_antivirus av_host
 php occ config:app:set --value="$AV_PORT" -- files_antivirus av_port
 php occ config:app:set --value="$AV_STREAM_MAX_LENGTH" -- files_antivirus av_stream_max_length
 php occ config:app:set --value="$AV_MAX_FILE_SIZE" -- files_antivirus av_max_file_size
+php occ fulltextsearch:configure '{"search_platform":"OCA\\FullTextSearch_Elasticsearch\\Platform\\ElasticSearchPlatform"}'
+php occ fulltextsearch_elasticsearch:configure "{\"elastic_host\":\"http://$FTS_USER:$FTS_PASSWORD@$FTS_HOST:$FTS_PORT\",\"elastic_index\":\"docker-cloud\"}"
+php occ files_fulltextsearch:configure "{\"files_pdf\":\"1\",\"files_office\":\"1\"}"
+php occ fulltextsearch:test && php occ fulltextsearch:index
