@@ -11,6 +11,8 @@ services:
         condition: service_healthy
       clamav:
         condition: service_healthy
+      imaginary:
+        condition: service_healthy
     networks:
       - nextcloud
     volumes:
