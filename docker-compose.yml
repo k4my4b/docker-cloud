@@ -13,6 +13,8 @@ services:
         condition: service_healthy
       imaginary:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     networks:
       - nextcloud
     volumes:
@@ -65,7 +67,7 @@ services:
       - 8080:80
     volumes:
       - nextcloud:/var/www/html:ro
-  
+
   clamav:
     image: clamav/clamav:stable
     container_name: clamav
@@ -77,6 +79,17 @@ services:
     image: nextcloud/aio-imaginary:latest
     container_name: imaginary
     restart: unless-stopped
+    networks:
+      - nextcloud
+
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+    container_name: elasticsearch
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - nextcloud
 
