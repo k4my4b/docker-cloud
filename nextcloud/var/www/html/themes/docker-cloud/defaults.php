@@ -100,7 +100,7 @@ class OC_Theme
 	 */
 	public function getColorPrimary()
 	{
-		return '#745bca';
+		return '#3794AC';
 	}
 
 	/**
