@@ -75,3 +75,8 @@ input#files_size {
   background: var(--color-main-background) !important;
   color: var(--color-text-lighter) !important;
 }
+
+/* app-dashboard header text color fix */
+div#app-dashboard > h2 {
+  color: var(--color-main-text) !important;
+}
