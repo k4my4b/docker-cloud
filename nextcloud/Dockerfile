@@ -29,7 +29,7 @@ ENV PHP_MEMORY_LIMIT=512M \
     FTS_PORT=9200 \
     FTS_USER=elastic \
     FTS_PASSWORD=changeme \
-    NC_DISABLED_APPS="firstrunwizard dashboard support survey_client federation weather_status nextcloud_announcements updatenotification logreader serverinfo" \
+    NC_DISABLED_APPS="firstrunwizard support survey_client federation weather_status nextcloud_announcements updatenotification logreader serverinfo" \
     NC_ENABLED_APPS="suspicious_login files_external admin_audit" \
     NC_ADDITIONAL_APPS="impersonate groupfolders deck forms terms_of_service calendar contacts mail quota_warning"
 
