@@ -19,6 +19,14 @@ body::before {
   color: var(--color-main-text);
 }
 
+#body-public.layout-base
+  div#content.app-public
+  div.body-login-container.update {
+  width: auto !important;
+  height: fit-content !important;
+  margin: 7% auto 0 auto;
+}
+
 header#header {
   height: var(--header-height) !important;
   background-color: var(
