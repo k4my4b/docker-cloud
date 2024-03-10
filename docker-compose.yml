@@ -41,7 +41,7 @@ services:
       retries: 120
 
   redis:
-    image: redis:alpine
+    image: redis:7.2.4-alpine
     container_name: redis
     restart: unless-stopped
     networks:
