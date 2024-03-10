@@ -1,4 +1,4 @@
-FROM nginx:mainline-alpine
+FROM nginx:1.24-alpine
 
 # Hosts and Ports 
 ENV NC_HOST=nextcloud \
