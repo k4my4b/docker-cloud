@@ -1,4 +1,4 @@
-FROM nextcloud:production-fpm-alpine
+FROM nextcloud:27.1.3-fpm-alpine
 
 COPY --chmod=775 docker-entrypoint-hooks.d /docker-entrypoint-hooks.d
 COPY --chown=82:82 var/www/html /var/www/html
