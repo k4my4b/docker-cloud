@@ -1,8 +1,18 @@
 volumes:
   nextcloud:
     name: nextcloud
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/nextcloud
   postgres:
     name: postgres
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/postgres
 
 networks:
   nextcloud:
