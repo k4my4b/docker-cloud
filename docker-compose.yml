@@ -1,3 +1,13 @@
+volumes:
+  nextcloud:
+    name: nextcloud
+  postgres:
+    name: postgres
+
+networks:
+  nextcloud:
+    name: nextcloud-network
+
 services:
   nextcloud:
     build:
@@ -92,13 +102,3 @@ services:
         condition: service_healthy
     networks:
       - nextcloud
-
-volumes:
-  nextcloud:
-    name: nextcloud
-  postgres:
-    name: postgres
-
-networks:
-  nextcloud:
-    name: nextcloud-network
