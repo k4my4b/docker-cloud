@@ -34,6 +34,7 @@ ENV PHP_MEMORY_LIMIT=512M \
     POSTGRES_DB=nextcloud \
     POSTGRES_USER=nextcloud \
     POSTGRES_PASSWORD=changeme \
+    REDIS_HOST=redis \
     NC_DISABLED_APPS="firstrunwizard support survey_client federation nextcloud_announcements updatenotification logreader serverinfo" \
     NC_ENABLED_APPS="suspicious_login files_external admin_audit" \
     NC_ADDITIONAL_APPS="impersonate groupfolders deck forms terms_of_service calendar contacts mail quota_warning"
