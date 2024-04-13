@@ -1,3 +1,23 @@
+volumes:
+  nextcloud:
+    name: nextcloud
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/nextcloud
+  postgres:
+    name: postgres
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/postgres
+
+networks:
+  nextcloud:
+    name: nextcloud-network
+
 services:
   nextcloud:
     build:
@@ -19,9 +39,25 @@ services:
       - nextcloud
     volumes:
       - nextcloud:/var/www/html
-    env_file:
-      - db.env
-      - nc.env
+    environment:
+      NEXTCLOUD_ADMIN_USER: "${NEXTCLOUD_ADMIN_USER}"
+      NEXTCLOUD_ADMIN_PASSWORD: "${NEXTCLOUD_ADMIN_PASSWORD}"
+      ENFORCE_TWOFACTORAUTH: "${ENFORCE_TWOFACTORAUTH}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "${NEXTCLOUD_TRUSTED_DOMAINS}"
+      OVERWRITEPROTOCOL: "${OVERWRITEPROTOCOL}"
+      OVERWRITECLIURL: "${OVERWRITECLIURL}"
+      OVERWRITEHOST: "${OVERWRITEHOST}"
+      TRUSTED_PROXIES: "${TRUSTED_PROXIES}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      FTS_PASSWORD: "${ELASTIC_PASSWORD}"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_SECURE: "${SMTP_SECURE}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_AUTHTYPE: "${SMTP_AUTHTYPE}"
+      SMTP_NAME: "${SMTP_NAME}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS}"
+      MAIL_DOMAIN: "${MAIL_DOMAIN}"
 
   postgres:
     image: postgres:15.6-alpine
@@ -32,8 +68,10 @@ services:
       - nextcloud
     volumes:
       - postgres:/var/lib/postgresql/data:Z
-    env_file:
-      - db.env
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: nextcloud 
+      POSTGRES_USER: nextcloud
     healthcheck:
       test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -t 1
       interval: 5s
@@ -92,13 +130,5 @@ services:
         condition: service_healthy
     networks:
       - nextcloud
-
-volumes:
-  nextcloud:
-    name: nextcloud
-  postgres:
-    name: postgres
-
-networks:
-  nextcloud:
-    name: nextcloud-network
+    environment:
+      ELASTIC_PASSWORD: "${ELASTIC_PASSWORD}"
