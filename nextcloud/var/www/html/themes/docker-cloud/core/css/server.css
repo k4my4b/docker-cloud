@@ -88,3 +88,13 @@ input#files_size {
 div#app-dashboard > h2 {
   color: var(--color-main-text) !important;
 }
+
+/* mail app */
+div.splitpanes__pane:nth-child(1) {
+  min-width: 400px !important;
+}
+
+.list-item .list-item-content__details {
+  justify-content: center !important;
+  align-items: center !important;
+}
