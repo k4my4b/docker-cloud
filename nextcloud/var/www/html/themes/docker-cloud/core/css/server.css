@@ -98,3 +98,8 @@ div.splitpanes__pane:nth-child(1) {
   justify-content: center !important;
   align-items: center !important;
 }
+
+/* files app */
+#app-content-files tr[data-file="Readme.md"] {
+    display: none;
+}
