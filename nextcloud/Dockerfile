@@ -39,7 +39,7 @@ ENV PHP_MEMORY_LIMIT=512M \
     NC_ENABLED_APPS="suspicious_login files_external admin_audit" \
     NC_ADDITIONAL_APPS="impersonate groupfolders deck forms terms_of_service calendar contacts mail quota_warning"
 
-RUN apk add --no-cache samba-client && \
+RUN apk add --no-cache samba-client ffmpeg && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS autoconf samba-dev && \
     pecl install smbclient && \
     docker-php-ext-enable smbclient && \
