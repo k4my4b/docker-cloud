@@ -2,7 +2,6 @@ FROM nextcloud:27.1.3-fpm-alpine
 
 COPY --chmod=775 docker-entrypoint-hooks.d /docker-entrypoint-hooks.d
 COPY --chown=82:82 var/www/html /var/www/html
-COPY --chmod=775 start.sh /
 
 ENV PHP_MEMORY_LIMIT=512M \
     PHP_UPLOAD_LIMIT=10G \
@@ -44,9 +43,6 @@ RUN apk add --no-cache samba-client ffmpeg && \
     pecl install smbclient && \
     docker-php-ext-enable smbclient && \
     apk del .build-deps
-
-ENTRYPOINT ["/start.sh"]
-CMD ["php-fpm"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=300s --retries=3 \
     CMD nc -z localhost 9000 || exit 1
