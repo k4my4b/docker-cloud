@@ -44,5 +44,8 @@ RUN apk add --no-cache samba-client ffmpeg && \
     docker-php-ext-enable smbclient && \
     apk del .build-deps
 
+RUN sed -i 's/\(^pm\) = dynamic/\1 = ondemand/' /usr/local/etc/php-fpm.d/www.conf; \
+    sed -i 's/\(^pm.max_children\) =.*/\1 = 5000/' /usr/local/etc/php-fpm.d/www.conf;
+
 HEALTHCHECK --interval=30s --timeout=3s --start-period=300s --retries=3 \
     CMD nc -z localhost 9000 || exit 1
