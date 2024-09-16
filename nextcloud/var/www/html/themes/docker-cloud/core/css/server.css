@@ -99,6 +99,23 @@ div.splitpanes__pane:nth-child(1) {
   align-items: center !important;
 }
 
+div.mail-message-body.mail-message-body-html {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+div.html-message-body {
+  margin: 5px 10px !important;
+  border-radius: var(--border-radius-large);
+}
+
+div#message-container,
+iframe.message-frame {
+  border-radius: var(--border-radius-large);
+}
+
 /* files app */
 #app-content-files tr[data-file="Readme.md"] {
     display: none;
