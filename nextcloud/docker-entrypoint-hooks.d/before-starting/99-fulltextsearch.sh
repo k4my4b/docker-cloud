@@ -1,3 +1,3 @@
 #!/bin/sh
 
-php occ fulltextsearch:live -q &
+php occ fulltextsearch:live --service &
