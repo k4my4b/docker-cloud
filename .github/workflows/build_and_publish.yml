@@ -7,10 +7,15 @@ on:
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Build and push the OCI image to ghcr.io
         run: |
-          docker login --username ${{ github.actor }} --password ${{ secrets.GHCR_TOKEN }} ghcr.io
-          docker build ./nextcloud --tag ghcr.io/k4my4b/docker-cloud:latest
-          docker push ghcr.io/k4my4b/docker-cloud:latest
+          docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          docker build ./nextcloud --tag ghcr.io/${{ github.actor }}/docker-cloud:latest
+          docker push ghcr.io/${{ github.actor }}/docker-cloud:latest
