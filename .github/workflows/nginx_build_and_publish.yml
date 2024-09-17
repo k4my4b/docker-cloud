@@ -1,0 +1,22 @@
+name: Build and publish docker-cloud/nginx OCI package(s)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: ["nginx/**"]
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and push the OCI nginx image to ghcr.io
+        run: |
+          docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          docker build ./nginx --tag ghcr.io/${{ github.actor }}/nginx:latest
+          docker push ghcr.io/${{ github.actor }}/nginx:latest
