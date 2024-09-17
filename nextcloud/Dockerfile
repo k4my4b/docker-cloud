@@ -25,6 +25,7 @@ ENV PHP_MEMORY_LIMIT=512M \
     AV_MAX_FILE_SIZE=104857600 \
     IMAGINARY_HOST=imaginary \
     IMAGINARY_PORT=9000 \
+    FTS_ENABLE=true \
     FTS_HOST=elasticsearch \
     FTS_PORT=9200 \
     FTS_USER=elastic \
