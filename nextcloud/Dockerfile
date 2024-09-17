@@ -47,5 +47,15 @@ RUN apk add --no-cache samba-client ffmpeg && \
 RUN sed -i 's/\(^pm\) = dynamic/\1 = ondemand/' /usr/local/etc/php-fpm.d/www.conf; \
     sed -i 's/\(^pm.max_children\) =.*/\1 = 5000/' /usr/local/etc/php-fpm.d/www.conf;
 
+RUN { \
+	echo 'opcache.enable=1'; \
+        echo 'opcache.memory_consumption=256'; \
+        echo 'opcache.interned_strings_buffer=64'; \
+        echo 'opcache.save_comments=1'; \
+        echo 'opcache.revalidate_freq=60'; \
+        echo 'opcache.jit=1255'; \
+        echo 'opcache.jit_buffer_size=8M'; \
+    } > /usr/local/etc/php/conf.d/opcache-recommended.ini;
+
 HEALTHCHECK --interval=30s --timeout=3s --start-period=300s --retries=3 \
     CMD nc -z localhost 9000 || exit 1
