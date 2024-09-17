@@ -20,8 +20,7 @@ networks:
 
 services:
   nextcloud:
-    build:
-      context: ./nextcloud
+    image: ghcr.io/k4my4b/nextcloud:latest
     container_name: nextcloud-fpm
     restart: unless-stopped
     depends_on:
@@ -92,8 +91,7 @@ services:
       start_period: 10s
 
   nginx:
-    build:
-      context: ./nginx
+    image: ghcr.io/k4my4b/nginx:latest
     container_name: nginx
     restart: unless-stopped
     depends_on:
@@ -121,8 +119,7 @@ services:
       - nextcloud
 
   elasticsearch:
-    build:
-      context: ./elasticsearch
+    image: ghcr.io/k4my4b/elasticsearch:latest
     container_name: elasticsearch
     restart: unless-stopped
     depends_on:
