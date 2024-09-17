@@ -1,8 +1,9 @@
-name: Build and publish OCI package(s)
+name: Build and publish docker-cloud/nextcloud OCI package(s)
 
 on:
   push:
     branches: [ "main" ]
+    paths: ["nextcloud/**"]
 
 jobs:
   build_and_publish:
@@ -14,8 +15,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - name: Build and push the OCI image to ghcr.io
+      - name: Build and push the OCI nextcloud image to ghcr.io
         run: |
           docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker build ./nextcloud --tag ghcr.io/${{ github.actor }}/docker-cloud:latest
-          docker push ghcr.io/${{ github.actor }}/docker-cloud:latest
+          docker build ./nextcloud --tag ghcr.io/${{ github.actor }}/nextcloud:latest
+          docker push ghcr.io/${{ github.actor }}/nextcloud:latest
