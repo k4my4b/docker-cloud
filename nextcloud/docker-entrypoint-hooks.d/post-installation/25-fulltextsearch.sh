@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ ! "$FTS_ENABLE" = "true" ] && exit 0
+
 FTS_APPS="fulltextsearch fulltextsearch_elasticsearch files_fulltextsearch"
 
 IFS=' '
