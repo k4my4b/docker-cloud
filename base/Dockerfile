@@ -1,6 +1,6 @@
 FROM alpine:3.19
 
-RUN apk add --no-cache parallel grml-zsh-config
+RUN apk add --no-cache parallel
 
 COPY --chmod=775 init.d /init.d
 COPY --chmod=755 init.sh /init.sh
