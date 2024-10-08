@@ -8,7 +8,7 @@ EDIR="${2:-/init.d/stop}"
 
 batch_and_run_in_parallel() {
     # Find and sort scripts
-    find "$1" -type f -executable -name '[0-9]*' | sort -V | \
+    find "$1" -type f -executable -name '[0-9]?-*.sh' | sort -V | \
     # Group the scripts of the same priority together
     awk '
     {
@@ -28,7 +28,7 @@ batch_and_run_in_parallel() {
     # Execute scripts of the same priority (same group) in parallel
     # Exit as soon as a script fails to execute properly
     while IFS= read -r scripts; do
-        parallel --will-cite --halt 2 -k -u -d ' ' sh {} ::: $scripts || {
+        parallel --will-cite --halt 2 -k -u -d ' ' {} ::: $scripts || {
 		kill -TERM 1
 		exit 1
 	}
