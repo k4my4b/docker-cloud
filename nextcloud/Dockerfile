@@ -1,14 +1,22 @@
-FROM nextcloud:27.1.3-fpm-alpine
+FROM ghcr.io/k4my4b/base:latest
 
-COPY --chmod=775 docker-entrypoint-hooks.d /docker-entrypoint-hooks.d
-COPY --chown=82:82 var/www/html /var/www/html
+RUN apk add --no-cache nextcloud-initscript nextcloud-pgsql jq
+RUN sed -i 's/^\(memory_limit = \).*/\1512m/' /etc/php82/php.ini
+RUN mkdir /run/nextcloud && chown 100:82 /run/nextcloud
+RUN sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc/php82/php-fpm.d/nextcloud.conf
+RUN find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
+
+COPY --chmod=775 init.d /init.d
+COPY --chmod=775 healthcheck.d /healthcheck.d
+COPY --chown=100:82 usr/share/webapps/nextcloud /usr/share/webapps/nextcloud
+COPY etc /etc
 
 ENV PHP_MEMORY_LIMIT=512M \
     PHP_UPLOAD_LIMIT=10G \
     PHP_MAX_TIME=3600 \
     CRON_INTERVAL=5m \
     EMPTY_SKELETON=true \
-    SKELETON_DIRECTORY="/var/www/html/core/skeleton" \
+    SKELETON_DIRECTORY="/usr/share/webapps/nextcloud/core/skeleton" \
     KNOWLEDGEBASE_ENABLED=false \
     DISABLE_WEB_UPGRADE=true \
     DEFAULT_PHONE_REGION="GB" \ 
@@ -39,24 +47,4 @@ ENV PHP_MEMORY_LIMIT=512M \
     NC_ENABLED_APPS="suspicious_login files_external admin_audit" \
     NC_ADDITIONAL_APPS="impersonate groupfolders deck forms terms_of_service calendar contacts mail quota_warning"
 
-RUN apk add --no-cache samba-client ffmpeg && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS autoconf samba-dev && \
-    pecl install smbclient && \
-    docker-php-ext-enable smbclient && \
-    apk del .build-deps
-
-RUN sed -i 's/\(^pm\) = dynamic/\1 = ondemand/' /usr/local/etc/php-fpm.d/www.conf; \
-    sed -i 's/\(^pm.max_children\) =.*/\1 = 5000/' /usr/local/etc/php-fpm.d/www.conf;
-
-RUN { \
-	echo 'opcache.enable=1'; \
-        echo 'opcache.memory_consumption=256'; \
-        echo 'opcache.interned_strings_buffer=64'; \
-        echo 'opcache.save_comments=1'; \
-        echo 'opcache.revalidate_freq=60'; \
-        echo 'opcache.jit=1255'; \
-        echo 'opcache.jit_buffer_size=8M'; \
-    } > /usr/local/etc/php/conf.d/opcache-recommended.ini;
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=300s --retries=3 \
-    CMD nc -z localhost 9000 || exit 1
+EXPOSE 9000
