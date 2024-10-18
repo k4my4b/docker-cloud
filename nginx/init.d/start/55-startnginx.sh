@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Switch to nginx user if running as root
+test "$(id -u)" -eq 0 && exec su -s /bin/sh -c "$0" nginx
+
 echo "Starting Nginx"
 nginx -g "daemon off;" -c /etc/nginx/nginx.conf &
 
