@@ -1,11 +1,5 @@
 #!/bin/sh
 
-occ config:system:set \
-    --type=string \
-    --value="$THEME" \
-    -- \
-    theme || exit 1
-
 occ config:app:set \
     --value="backgroundColor" \
     -- \
