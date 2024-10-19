@@ -1,6 +1,6 @@
 FROM ghcr.io/k4my4b/base:latest
 
-RUN apk add --no-cache nextcloud-initscript nextcloud-pgsql jq php82-sysvsem php82-pecl-imagick
+RUN apk add --no-cache nextcloud-initscript nextcloud-pgsql jq php82-sysvsem php82-pecl-imagick imagemagick-svg
 RUN sed -i 's/^\(memory_limit = \).*/\1512m/' /etc/php82/php.ini
 RUN mkdir /run/nextcloud && chown 100:82 /run/nextcloud
 RUN sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc/php82/php-fpm.d/nextcloud.conf
