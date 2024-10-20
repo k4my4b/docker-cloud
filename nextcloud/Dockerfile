@@ -5,6 +5,10 @@ RUN sed -i 's/^\(memory_limit = \).*/\1512m/' /etc/php82/php.ini
 RUN mkdir /run/nextcloud && chown 100:82 /run/nextcloud
 RUN sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc/php82/php-fpm.d/nextcloud.conf
 RUN find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
+# TODO: remove this later on
+RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini; \
+	sed -i '/^\[global\]/a clear_env = no' /etc/php82/php-fpm.conf; \
+	sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf
 
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
