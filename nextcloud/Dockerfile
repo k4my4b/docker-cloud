@@ -7,8 +7,7 @@ RUN sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc
 RUN find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
 # TODO: remove this later on
 RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini; \
-	sed -i '/^\[global\]/a clear_env = no' /etc/php82/php-fpm.conf; \
-	sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf
+    sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf
 
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
