@@ -14,6 +14,7 @@ COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
 COPY --chown=100:82 usr/share/webapps/nextcloud /usr/share/webapps/nextcloud
 COPY etc/crontabs /etc/crontabs
+COPY etc/php82 /etc/php82
 COPY --chown=100:82 etc/nextcloud /etc/nextcloud
 
 ENV PHP_MEMORY_LIMIT=512M \
