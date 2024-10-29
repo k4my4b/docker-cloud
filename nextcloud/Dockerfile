@@ -9,7 +9,18 @@ RUN find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
 RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini; \
     sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf; \
     sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf
+    sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf; \
+    sed -i '194,$d' /etc/php82/php-fpm.d/nextcloud.conf; \
+    {                                               \
+        echo 'opcache.enable=1';                    \
+        echo 'opcache.interned_strings_buffer=32';  \
+        echo 'opcache.max_accelerated_files=10000'; \
+        echo 'opcache.memory_consumption=128';      \
+        echo 'opcache.save_comments=1';             \
+        echo 'opcache.revalidate_freq=60';          \
+        echo 'opcache.jit=1255';                    \
+        echo 'opcache.jit_buffer_size=128M';        \
+    } >> "/etc/php82/conf.d/00_opcache.ini"
 
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
