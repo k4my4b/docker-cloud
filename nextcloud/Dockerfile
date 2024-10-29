@@ -8,7 +8,8 @@ RUN find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
 # TODO: remove this later on
 RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini; \
     sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf
+    sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf; \
+    sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf
 
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
