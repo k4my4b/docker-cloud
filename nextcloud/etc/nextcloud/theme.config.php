@@ -1,4 +1,4 @@
 <?php
-$CONFIG = array (
-  'theme' => getenv("THEME"),
-);
+$CONFIG = [
+    'theme' => getenv("THEME"),
+];
