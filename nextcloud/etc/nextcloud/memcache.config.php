@@ -48,7 +48,7 @@ if ((!empty($redisHost) && !empty($redisPort)) xor (!empty($redisSeeds))) {
         $CONFIG['redis.cluster'] = array_merge($CONFIG['redis.cluster'], $conf);
     } else {
         $CONFIG['redis']['host'] = $redisHost;
-        $CONFIG['redis']['port'] = $redisPort;
+        $CONFIG['redis']['port'] = ($redisHost[0] != '/') ? $redisPort : 0;
         // Redis DB index (optional, if undefined SELECT will not run and will use Redis Server's default DB Index.)
         $redisDbIndex = getenv('REDIS_DB_INDEX');
         if (!empty($redisDbIndex)) {
