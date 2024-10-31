@@ -29,13 +29,13 @@ $CONFIG['preview_concurrency_new'] = $cpuCores > 0 ? $cpuCores : 4;
 
 // Set LibreOffice path if available
 $libreofficePath = trim(shell_exec('which libreoffice') ?? '');
-if (!empty($libreofficePath) && $libreofficePath[0] === '/') {
+if (preg_match('/^\/[a-zA-Z0-9_\-\/\.]+$/', $libreofficePath)) {
     $CONFIG['preview_libreoffice_path'] = $libreofficePath;
 }
 
 // Set ffmpeg path if available and add movie preview provider
 $ffmpegPath = trim(shell_exec('which ffmpeg') ?? '');
-if (!empty($ffmpegPath) && $ffmpegPath[0] === '/') {
+if (preg_match('/^\/[a-zA-Z0-9_\-\/\.]+$/', $ffmpegPath)) {
     $CONFIG['preview_ffmpeg_path'] = $ffmpegPath;
     $CONFIG['enabledPreviewProviders'][] = 'OC\Preview\Movie';
 }
