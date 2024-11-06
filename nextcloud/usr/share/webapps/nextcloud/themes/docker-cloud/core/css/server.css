@@ -128,3 +128,20 @@ iframe.message-frame {
 #app-content-files tr[data-file="Readme.md"] {
     display: none;
 }
+
+/* logreader app */
+body#body-settings main#content.app-settings div#app-content div#logreader-root table {
+    height: 100%;
+}
+
+body#body-settings main#content.app-settings div#app-content div#logreader-root table > thead th:nth-child(3) {
+    width: 100%;
+}
+
+body#body-settings main#content.app-settings div#app-content div#logreader-root table > thead{
+    height: var(--header-height);
+}
+
+body#body-settings main#content.app-settings div#app-content div#logreader-root table > tbody{
+    height: calc(100% - var(--header-height));
+}
