@@ -15,6 +15,7 @@ $AUTOCONFIG = [
     'dbtype' => 'pgsql',
     'directory' => getEnvValue('DATA_DIR', '/var/lib/nextcloud/data'),
     'dbtableprefix' => getEnvValue('DB_TABLE_PREFIX', 'oc_'),
+    'dbpersistent' => true,
 ];
 
 // Database settings
