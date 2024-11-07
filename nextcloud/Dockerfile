@@ -11,7 +11,8 @@ RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini; \
     sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf; \
     sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf; \
     sed -i 's/proc_open,//' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i '194,$d' /etc/php82/php-fpm.d/nextcloud.conf;
+    sed -i '194,$d' /etc/php82/php-fpm.d/nextcloud.conf; \
+    rm -f /etc/php82/conf.d/*;
 
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
