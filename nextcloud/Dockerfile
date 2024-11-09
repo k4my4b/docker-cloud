@@ -1,19 +1,34 @@
 FROM ghcr.io/k4my4b/base:latest
 
-RUN apk add --no-cache nextcloud-initscript nextcloud-pgsql jq php82-pecl-redis php82-sysvsem php82-pecl-imagick imagemagick-svg
-RUN sed -i 's/^\(memory_limit = \).*/\1512m/' /etc/php82/php.ini
-RUN mkdir /run/nextcloud && chown 100:82 /run/nextcloud
-RUN sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc/php82/php-fpm.d/nextcloud.conf
-RUN find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
-# TODO: remove this later on
-RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini; \
-    sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i 's/proc_open,//' /etc/php82/php-fpm.d/nextcloud.conf; \
-    sed -i '194,$d' /etc/php82/php-fpm.d/nextcloud.conf; \
-    rm -f /etc/php82/conf.d/*;
+# Install all necessary PHP packages and Nextcloud dependencies
+RUN apk add --no-cache \
+    php82-ctype php82-curl php82-dom \
+    php82-fileinfo php82-gd php82-mbstring php82-openssl \
+    php82-posix php82-session php82-simplexml php82-xmlreader \
+    php82-xmlwriter php82-zip php82-xml php82-pgsql php82-pdo \
+    php82-pdo_pgsql php82-intl php82-sodium php82-pecl-redis \
+    php82-ldap php82-pecl-smbclient php82-ftp php82-imap \
+    php82-bcmath php82-gmp php82-exif php82-sysvsem php82-pecl-imagick \
+    imagemagick-svg libreoffice nextcloud-files_trashbin \
+    nextcloud-initscript nextcloud jq nextcloud-default-apps
 
+# PHP and Nextcloud configuration adjustments
+RUN sed -i 's/^\(memory_limit = \).*/\1512m/' /etc/php82/php.ini && \
+    mkdir /run/nextcloud && chown 100:82 /run/nextcloud && \
+    sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc/php82/php-fpm.d/nextcloud.conf && \
+    find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
+
+# Tweak PHP FPM configuration
+# TODO remove this once these changes are refactored into their relavant config files
+RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini && \
+    sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf && \
+    sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf && \
+    sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf && \
+    sed -i 's/proc_open,//' /etc/php82/php-fpm.d/nextcloud.conf && \
+    sed -i '194,$d' /etc/php82/php-fpm.d/nextcloud.conf && \
+    rm -f /etc/php82/conf.d/*
+
+# Copy custom configuration and scripts
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
 COPY --chown=100:82 usr/share/webapps/nextcloud /usr/share/webapps/nextcloud
@@ -21,6 +36,7 @@ COPY etc/crontabs /etc/crontabs
 COPY etc/php82 /etc/php82
 COPY --chown=100:82 etc/nextcloud /etc/nextcloud
 
+# Set environment variables
 ENV PHP_MEMORY_LIMIT=512M \
     PHP_UPLOAD_LIMIT=10G \
     PHP_MAX_TIME=3600 \
