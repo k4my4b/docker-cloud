@@ -9,7 +9,7 @@ RUN apk add --no-cache \
     php82-pdo_pgsql php82-intl php82-sodium php82-pecl-redis \
     php82-ldap php82-pecl-smbclient php82-ftp php82-imap \
     php82-bcmath php82-gmp php82-exif php82-sysvsem php82-pecl-imagick \
-    imagemagick-svg libreoffice nextcloud-files_trashbin \
+    imagemagick-svg ffmpeg nextcloud-files_trashbin \
     nextcloud-initscript nextcloud jq nextcloud-default-apps
 
 # PHP and Nextcloud configuration adjustments
