@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Switch to nextcloud user if running as root
-test "$(id -u)" -eq 0 && exec su -s /bin/sh -c "$0" nextcloud
-
 echo "Starting nextcloud"
 # Start php-fpm82 in the background
 php-fpm82 --nodaemonize --fpm-config /etc/php82/php-fpm.d/nextcloud.conf &

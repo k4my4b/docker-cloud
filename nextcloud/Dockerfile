@@ -10,23 +10,9 @@ RUN apk add --no-cache \
     php82-ldap php82-pecl-smbclient php82-ftp php82-imap \
     php82-bcmath php82-gmp php82-exif php82-sysvsem php82-pecl-imagick \
     imagemagick-svg ffmpeg nextcloud-files_trashbin \
-    nextcloud-initscript nextcloud jq nextcloud-default-apps
-
-# PHP and Nextcloud configuration adjustments
-RUN sed -i 's/^\(memory_limit = \).*/\1512m/' /etc/php82/php.ini && \
-    mkdir /run/nextcloud && chown 100:82 /run/nextcloud && \
-    sed -i -e 's/\(listen = \).*/\10.0.0.0:9000/g' -e 's/listen\.mode.*//g' /etc/php82/php-fpm.d/nextcloud.conf && \
+    php82-fpm nextcloud jq nextcloud-default-apps && \
+    rm -f /etc/php82/conf.d/* /etc/php82/php-fpm.d/* && \
     find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
-
-# Tweak PHP FPM configuration
-# TODO remove this once these changes are refactored into their relavant config files
-RUN sed -i '/^\[PHP\]/a clear_env = no' /etc/php82/php.ini && \
-    sed -i '/^\[nextcloud\]/a clear_env = no' /etc/php82/php-fpm.d/nextcloud.conf && \
-    sed -i '/php_admin_value\[session.save_path\]/d' /etc/php82/php-fpm.d/nextcloud.conf && \
-    sed -i 's/shell_exec,//' /etc/php82/php-fpm.d/nextcloud.conf && \
-    sed -i 's/proc_open,//' /etc/php82/php-fpm.d/nextcloud.conf && \
-    sed -i '194,$d' /etc/php82/php-fpm.d/nextcloud.conf && \
-    rm -f /etc/php82/conf.d/*
 
 # Copy custom configuration and scripts
 COPY --chmod=775 init.d /init.d
@@ -37,9 +23,10 @@ COPY etc/php82 /etc/php82
 COPY --chown=100:82 etc/nextcloud /etc/nextcloud
 
 # Set environment variables
-ENV PHP_MEMORY_LIMIT=512M \
+ENV PHP_MEMORY_LIMIT=1G \
     PHP_UPLOAD_LIMIT=10G \
     PHP_MAX_TIME=3600 \
+    PHP_UPLOAD_FILE_LIMIT=1000 \
     CRON_INTERVAL=5m \
     EMPTY_SKELETON=true \
     SKELETON_DIRECTORY="/usr/share/webapps/nextcloud/core/skeleton" \
