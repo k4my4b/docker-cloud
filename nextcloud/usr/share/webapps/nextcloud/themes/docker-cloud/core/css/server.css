@@ -27,6 +27,10 @@ body::before {
     margin-bottom: 1rem;
 }
 
+#body-login > form {
+    margin: 0;
+}
+
 #body-public.layout-base
 div#content.app-public
 div.body-login-container.update {
