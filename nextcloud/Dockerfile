@@ -1,4 +1,49 @@
+# Build nginx unit with njs support
+FROM ghcr.io/k4my4b/base:latest AS build
+
+RUN apk add --no-cache \
+    alpine-sdk openssl-dev pcre2-dev php82-dev php82-embed
+
+ADD https://github.com/nginx/unit/archive/refs/tags/1.33.0.tar.gz /unit/unit-1.33.0.tar.gz
+ADD https://github.com/nginx/njs/archive/refs/tags/0.8.7.tar.gz /unit/njs-0.8.7.tar.gz
+ADD https://gitlab.alpinelinux.org/alpine/aports/-/raw/3.19-stable/community/unit/phpver.patch /unit
+RUN mkdir -p /unit/unit /unit/njs && \
+    tar -xvf /unit/unit-1.33.0.tar.gz --strip-components=1 -C /unit/unit && \
+    tar -xvf /unit/njs-0.8.7.tar.gz --strip-components=1 -C /unit/njs && \
+    cd /unit/njs && \
+    ./configure --no-zlib --no-libxml2 && make && \
+    cd /unit/unit && patch -p1 < ../phpver.patch && \
+    ./configure \
+        --njs \
+        --openssl \
+        --cc-opt="-I ../njs/src/ -I ../njs/build/" \
+        --ld-opt="-L ../njs/build/" \
+        --user=unit \
+        --group=unit \
+        --prefix="/usr/local" \
+		--localstatedir="/var" \
+		--statedir="/var/lib/unit" \
+		--control="unix:/run/control.unit.sock" \
+		--pid="/run/unit.pid" \
+		--log="/var/log/unit.log" \
+		--tmpdir=/tmp \
+		--modulesdir="/usr/local/lib/unit/modules" && \
+    ./configure php \
+        --module=php82 \
+        --config=/usr/bin/php-config \
+        --lib-path=/usr/lib && \
+    make && make install
+
 FROM ghcr.io/k4my4b/base:latest
+
+# Setup and install nginx unit built in the previous stage
+RUN addgroup -S unit 2>/dev/null && \
+    adduser -S -D -H -h /var/lib/unit -s /sbin/nologin -G unit -g "NGINX Unit" unit 2>/dev/null && \
+    mkdir -p /var/lib/unit /var/log/unit && \
+    chown unit:unit /var/lib/unit /var/log/unit
+
+COPY --from=build /usr/local /usr/local
+COPY --from=build //usr/lib/libphp82.so /usr/lib/libphp82.so
 
 # Install all necessary PHP packages and Nextcloud dependencies
 RUN apk add --no-cache \
@@ -10,8 +55,8 @@ RUN apk add --no-cache \
     php82-ldap php82-pecl-smbclient php82-ftp php82-imap \
     php82-bcmath php82-gmp php82-exif php82-sysvsem php82-pecl-imagick \
     imagemagick-svg ffmpeg nextcloud-files_trashbin \
-    php82-fpm nextcloud jq nextcloud-default-apps && \
-    rm -f /etc/php82/conf.d/* /etc/php82/php-fpm.d/* && \
+    nextcloud jq nextcloud-default-apps curl && \
+    rm -f /etc/php82/conf.d/* && \
     find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
 
 # Copy custom configuration and scripts
@@ -21,6 +66,7 @@ COPY --chown=100:82 usr/share/webapps/nextcloud /usr/share/webapps/nextcloud
 COPY etc/crontabs /etc/crontabs
 COPY etc/php82 /etc/php82
 COPY --chown=100:82 etc/nextcloud /etc/nextcloud
+COPY --chmod=660 etc/unit /etc/unit
 
 # Set environment variables
 ENV PHP_MEMORY_LIMIT=1G \
@@ -60,5 +106,3 @@ ENV PHP_MEMORY_LIMIT=1G \
     NC_DISABLED_APPS="firstrunwizard support survey_client federation nextcloud_announcements updatenotification logreader serverinfo" \
     NC_ENABLED_APPS="suspicious_login files_external admin_audit" \
     NC_ADDITIONAL_APPS="impersonate groupfolders deck forms terms_of_service calendar contacts mail quota_warning"
-
-EXPOSE 9000

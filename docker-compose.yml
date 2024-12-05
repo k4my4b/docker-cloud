@@ -16,7 +16,7 @@ services:
   nextcloud:
     build:
       context: ./nextcloud
-    container_name: nextcloud-fpm
+    container_name: nextcloud
     restart: unless-stopped
     depends_on:
       postgres:
@@ -31,6 +31,8 @@ services:
         condition: service_healthy
     networks:
       - nextcloud
+    ports:
+      - 80:80
     volumes:
       - nextcloud:/usr/share/webapps/nextcloud
       - nextcloud-apps:/var/lib/nextcloud/apps
@@ -86,23 +88,6 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
-
-  nginx:
-    build:
-      context: ./nginx
-    container_name: nginx
-    restart: unless-stopped
-    depends_on:
-      nextcloud:
-        condition: service_healthy
-    networks:
-      - nextcloud
-    ports:
-      - 8080:80
-      - 8443:443
-    volumes:
-      - nextcloud:/usr/share/webapps/nextcloud:ro
-      - nextcloud-apps:/var/lib/nextcloud/apps:ro
 
   clamav:
     image: clamav/clamav:1.3.0-41
