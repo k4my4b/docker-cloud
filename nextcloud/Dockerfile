@@ -30,7 +30,7 @@ RUN mkdir -p /unit/unit /unit/njs && \
 		--modulesdir="/usr/local/lib/unit/modules" && \
     ./configure php \
         --module=php82 \
-        --config=/usr/bin/php-config \
+        --config=/usr/bin/php-config82 \
         --lib-path=/usr/lib && \
     make && make install
 
