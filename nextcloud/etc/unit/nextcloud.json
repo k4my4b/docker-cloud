@@ -3,6 +3,7 @@
         "*:80": {
             "pass": "routes",
             "forwarded": {
+                "protocol": "X-Forwarded-Proto",
                 "client_ip": "X-Forwarded-For",
                 "source": [
                     "10.0.0.0/8",
