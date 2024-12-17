@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Check if required commands are available
+command -v occ > /dev/null || { echo "command not found: occ "; exit 1; }
+command -v jq > /dev/null || { echo "command not found: jq"; exit 1; }
+command -v curl > /dev/null || { echo "command not found: curl"; exit 1; }
+
 echo "Starting unitd"
 # Start unitd in the background
 unitd --no-daemon --user unit --group www-data --control 0.0.0.0:9000 &
