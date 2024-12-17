@@ -17,6 +17,11 @@ test -d /proc/$UNITD_PID && {
     RESPONSE="$(curl -sX PUT --data-binary "@$UNITD_CONFIG" localhost:9000/config/)"
     echo "$RESPONSE" | jq -e '.success' > /dev/null && {
         echo "Nextcloud started successfully"
+        while test "$(occ status --no-warnings --output=json | jq -r '.installed')" = "false"; do
+            echo "Nextcloud is not installed! Waiting ..."
+            sleep 5
+        done
+        echo "Nextcloud is installed!"
         exit 0
     }
     echo "$RESPONSE"
