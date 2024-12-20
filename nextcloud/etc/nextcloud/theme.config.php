@@ -1,4 +1,4 @@
 <?php
 $CONFIG = [
-    'theme' => getenv("THEME"),
+    'theme' => getenv("THEME") ?: "docker-cloud",
 ];
