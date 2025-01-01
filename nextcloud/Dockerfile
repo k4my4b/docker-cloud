@@ -65,7 +65,7 @@ COPY --chmod=775 healthcheck.d /healthcheck.d
 COPY --chown=100:82 usr/share/webapps/nextcloud /usr/share/webapps/nextcloud
 COPY etc/crontabs /etc/crontabs
 COPY etc/php82 /etc/php82
-COPY --chown=100:82 etc/nextcloud /etc/nextcloud
+COPY --chmod=660 --chown=100:82 etc/nextcloud /etc/nextcloud
 COPY --chmod=660 etc/unit /etc/unit
 
 # Set environment variables
