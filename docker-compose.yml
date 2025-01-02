@@ -13,6 +13,22 @@ networks:
     name: nextcloud-network
 
 services:
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    restart: unless-stopped
+    depends_on:
+      nextcloud:
+        condition: service_healthy
+    networks:
+      - nextcloud
+    ports:
+      - 80:80
+      - 443:443
+    links:
+      - nextcloud
+
   nextcloud:
     build:
       context: ./nextcloud
@@ -27,8 +43,6 @@ services:
         condition: service_healthy
     networks:
       - nextcloud
-    ports:
-      - 80:80
     volumes:
       - nextcloud:/usr/share/webapps/nextcloud
       - nextcloud-apps:/var/lib/nextcloud/apps
