@@ -26,5 +26,5 @@ curl -fs localhost > /dev/null || {
     exit 1
 }
 
-echo "Instance is healthy"
+echo "Nextcloud is healthy"
 exit 0
