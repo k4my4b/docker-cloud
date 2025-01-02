@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Check if required commands are available
+command -v occ > /dev/null || { echo "command not found: occ "; exit 1; }
+command -v jq > /dev/null || { echo "command not found: jq"; exit 1; }
+command -v curl > /dev/null || { echo "command not found: curl"; exit 1; }
+command -v nc > /dev/null || { echo "command not found: nc"; exit 1; }
+
 nc -z 127.0.0.1 9000 || {
     echo "Unit is not listening on local port 9000"
     exit 1
