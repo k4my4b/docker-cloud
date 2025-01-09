@@ -2,7 +2,7 @@ FROM nginx:mainline-alpine3.19 AS nginx
 FROM ghcr.io/k4my4b/base:latest
 
 RUN apk add --no-cache nginx openssl gettext-envsubst curl
-RUN mkdir -p /etc/nginx/conf.d && mkdir -p /etc/nginx/templates && mkdir -p /etc/nginx/ssl
+RUN mkdir -p /etc/nginx/conf.d /etc/nginx/templates /etc/nginx/ssl /var/cache/nginx
 
 # Hosts and Ports 
 ENV NC_HOST=nextcloud \
