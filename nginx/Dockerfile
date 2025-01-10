@@ -14,7 +14,7 @@ ENV NC_HOST=nextcloud \
 ENV NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE=true \
     NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/http.d
 
-COPY nextcloud.conf /etc/nginx/templates/default.conf.template
+COPY --chmod=640 etc /etc
 COPY --chmod=755 --from=nginx /docker-entrypoint.d/* /init.d/start/
 COPY --chmod=755 init.d /init.d
 COPY --chmod=755 healthcheck.d /healthcheck.d
