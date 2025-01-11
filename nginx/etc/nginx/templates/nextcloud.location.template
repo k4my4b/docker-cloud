@@ -1,0 +1,4 @@
+# Proxy other requests to the main Nextcloud service.
+location / {
+    proxy_pass http://${NC_HOST}:${NC_PORT}/;
+}

@@ -2,7 +2,7 @@ FROM nginx:mainline-alpine3.19 AS nginx
 FROM ghcr.io/k4my4b/base:latest
 
 RUN apk add --no-cache nginx openssl gettext-envsubst curl
-RUN mkdir -p /etc/nginx/conf.d /etc/nginx/templates /etc/nginx/ssl /var/cache/nginx
+RUN mkdir -p /etc/nginx/locations /etc/nginx/templates /etc/nginx/ssl /var/cache/nginx
 
 # Hosts and Ports 
 ENV NC_HOST=nextcloud \
@@ -12,7 +12,7 @@ ENV NC_HOST=nextcloud \
 
 # Nginx Configurations
 ENV NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE=true \
-    NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/http.d
+    NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/locations
 
 COPY --chmod=640 etc /etc
 COPY --chmod=755 --from=nginx /docker-entrypoint.d/* /init.d/start/

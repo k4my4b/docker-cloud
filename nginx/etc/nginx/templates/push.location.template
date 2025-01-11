@@ -1,0 +1,7 @@
+# Handle WebSocket connections for Nextcloud push notifications
+location ^~ /push/ {
+    proxy_pass http://${PUSH_HOST}:${PUSH_PORT}/;
+    # Ensure WebSocket headers are passed correctly
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
