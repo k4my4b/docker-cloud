@@ -9,6 +9,27 @@ function getEnvValue($varName, $default = null) {
     return $value;
 }
 
+function getValidEnv($env, $default = null, $regex = null) {
+    $value = null;
+
+    if ($regex === '' || $regex === null) {
+        $value = filter_var(getenv($env) ?: 'null',
+                FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? $default;
+    } else {
+        $value = filter_var(getenv($env), FILTER_VALIDATE_REGEXP, [
+                "options" => ["regexp" => $regex]
+        ]) ?: $default;
+    }
+
+    if (($value === '' || $value === null) && ($default === '' || $default === null)) {
+        throw new Exception("'$env' is not set (correctly) or is empty and no default is provided.");
+    }
+
+    error_log("[AUTOCONFIG] '$env' => " . var_export($value, true) . (($default === $value) ? ' (default)' : ''));
+
+    return $value;
+};
+
 function readConfigFile($uri) {
     // Invalidate opcache  if the timestamp changed
     if (function_exists('opcache_invalidate')) {
@@ -94,8 +115,10 @@ try {
 try {
     $file = OC::$SERVERROOT.'/config/reverse-proxy.config.php';
 
+    $IP_CIDR='/((\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?)/';
+
     $proxyConfig = [
-        'trusted_proxies' => getenv('TRUSTED_PROXIES') ?: (function() use ($file) {
+        'trusted_proxies' => getValidEnv('TRUSTED_PROXIES', (function() use ($file) {
             // Multiple processes may run this code concurrently during installation.
             // This means headers could contain different values at any given time.
             // We append new values to the file rather than overwriting to preserve
@@ -107,11 +130,37 @@ try {
 
             // Merge with existing trusted proxies from the configuration file
             return array_unique(array_merge(readConfigFile($file)['trusted_proxies'] ?? [], $trustedProxies));
-        })()
+        })(), $IP_CIDR),
     ];
 
     writeConfigFile($file, $proxyConfig);
 } catch (Exception $e) {
     error_log($e->getMessage());
     error_log('Skipping automatic reverse-proxy configuration.');
+}
+
+// Defaults
+try {
+    $file = OC::$SERVERROOT.'/config/base.config.php';
+
+    $ISO_3166_1="/^[A-Z]{2}$/";
+    $IETF_BCP_47="/^[a-zA-Z]{2,8}(-[a-zA-Z]{2,8})*(-[a-zA-Z]{2,8})*$/";
+    $IANA_TIMEZONE="/^[A-Za-z]+(?:_[A-Za-z]+)?(?:\/[A-Za-z]+(?:_[A-Za-z0-9-]+)*)+$/";
+    $UNIX_PATH="/^\/(?:[^\/\0]+\/)*[^\/\0]*$/";
+
+    $config = [
+        'server_root' => OC::$SERVERROOT,
+        'default_language' => getValidEnv("DEFAULT_LANGUAGE", "en_GB", $IETF_BCP_47),
+        'default_locale' => getValidEnv("DEFAULT_LOCALE", "en_GB", $IETF_BCP_47),
+        'default_phone_region' => getValidEnv("DEFAULT_PHONE_REGION", "GB", $ISO_3166_1),
+        'default_timezone' => getValidEnv("DEFAULT_TIMEZONE", "Etc/GMT", $IANA_TIMEZONE),
+        'skeletondirectory' => getValidEnv("SKELETON_DIRECTORY", OC::$SERVERROOT.'/core/skeleton', $UNIX_PATH),
+        'upgrade.disable-web' => getValidEnv("DISABLE_WEB_UPGRADE", true),
+        'knowledgebaseenabled' => getValidEnv("KNOWLEDGEBASE_ENABLED", false),
+    ];
+
+    writeConfigFile($file, $config);
+} catch (Exception $e) {
+    error_log($e->getMessage());
+    error_log('Skipping automatic defaults configuration.');
 }
