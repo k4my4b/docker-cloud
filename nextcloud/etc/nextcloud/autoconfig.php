@@ -138,7 +138,7 @@ try {
     error_log('[AUTOCONFIG] Skipping reverse-proxy configuration: ' . $e->getMessage());
 }
 
-// Defaults
+// Basic defaults and config
 try {
     $file = OC::$SERVERROOT.'/config/base.config.php';
 
@@ -156,4 +156,17 @@ try {
     writeConfigFile($file, $config);
 } catch (Exception $e) {
     error_log('[AUTOCONFIG] Skipping base configuration: ' . $e->getMessage());
+}
+
+// Theming
+try {
+    $file = OC::$SERVERROOT.'/config/theme.config.php';
+
+    $config = [
+        'theme' => getValidEnv("THEME", "docker-cloud", $STRING),
+    ];
+
+    writeConfigFile($file, $config);
+} catch (Exception $e) {
+    error_log('[AUTOCONFIG] Skipping theme configuration: ' . $e->getMessage());
 }
