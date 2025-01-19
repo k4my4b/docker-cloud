@@ -170,3 +170,73 @@ try {
 } catch (Exception $e) {
     error_log('[AUTOCONFIG] Skipping theme configuration: ' . $e->getMessage());
 }
+
+// Preview settings
+try {
+    $file = OC::$SERVERROOT.'/config/preview.config.php';
+
+    $config = [
+        'enable_previews' => true,
+        'preview_format' => 'webp',
+        'cropimagepreviews' => false,
+        'preview_max_x' => 2048,
+        'preview_max_y' => 2048,
+        'preview_max_filesize_image' => 50,
+        'preview_max_memory' => 256,
+        'enabledPreviewProviders' => [
+            'OC\Preview\BMP',
+            'OC\Preview\GIF',
+            'OC\Preview\JPEG',
+            'OC\Preview\Krita',
+            'OC\Preview\MarkDown',
+            'OC\Preview\MP3',
+            'OC\Preview\OpenDocument',
+            'OC\Preview\PNG',
+            'OC\Preview\TXT',
+            'OC\Preview\XBitmap',
+        ],
+    ];
+
+    // Set preview concurrency based on the number of available CPU cores
+    $cpuCores = intval(shell_exec('nproc') ?? 0);
+    $config['preview_concurrency_all'] = $cpuCores > 0 ? $cpuCores * 2 : 8;
+    $config['preview_concurrency_new'] = $cpuCores > 0 ? $cpuCores : 4;
+
+    // Set LibreOffice path if available
+    $libreofficePath = trim(shell_exec('which libreoffice') ?? '');
+    if (realpath($libreofficePath)) {
+        $config['preview_libreoffice_path'] = $libreofficePath;
+    }
+
+    // Set ffmpeg path if available and add movie preview provider
+    $ffmpegPath = trim(shell_exec('which ffmpeg') ?? '');
+    if (realpath($ffmpegPath)) {
+        $config['preview_ffmpeg_path'] = $ffmpegPath;
+        $config['enabledPreviewProviders'][] = 'OC\Preview\Movie';
+    }
+
+    // Add Imaginary preview if IMAGINARY_HOST and IMAGINARY_PORT environment variables are set
+    try {
+        $imaginaryHost = getValidEnv('IMAGINARY_HOST', null, $STRING);
+        $imaginaryPort = getValidEnv('IMAGINARY_PORT', null, $PORT);
+        $config['preview_imaginary_url'] = sprintf('http://%s:%s', $imaginaryHost, $imaginaryPort);
+        $config['enabledPreviewProviders'][] = 'OC\Preview\Imaginary';
+        $config['enabledPreviewProviders'][] = 'OC\Preview\ImaginaryPDF';
+
+        // Add Imaginary secret key if available
+        try {
+            $imaginarySecret = getValidEnv('IMAGINARY_SECRET', null, $STRING);
+            if (!empty($imaginarySecret)) {
+                $config['preview_imaginary_key'] = $imaginarySecret;
+            }
+        } catch (Exception $e) {
+            error_log('[AUTOCONFIG] [WARNING] ' . $e->getMessage());
+        }
+    } catch (Exception $e) {
+        error_log('[AUTOCONFIG] Skipping "imaginary" configuration: ' . $e->getMessage());
+    }
+
+    writeConfigFile($file, $config);
+} catch (Exception $e) {
+    error_log('[AUTOCONFIG] Skipping preview configuration: ' . $e->getMessage());
+}
