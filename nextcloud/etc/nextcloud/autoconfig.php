@@ -79,6 +79,7 @@ $UNIX_PATH="/^\/(?:[^\/\0]+\/)*[^\/\0]*$/";
 $IP_CIDR='/((\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?)/';
 $STRING='/.*/';
 $PORT='/^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/';
+$INTEGER='/^-?\d+$/';
 
 // For now at least, only PostgreSQL is supported
 // TODO remove this warning when more databases are supported or ...
@@ -230,7 +231,7 @@ try {
                 $config['preview_imaginary_key'] = $imaginarySecret;
             }
         } catch (Exception $e) {
-            error_log('[AUTOCONFIG] [WARNING] ' . $e->getMessage());
+            error_log('[AUTOCONFIG] [OPTIONAL] Skipping "imaginary" authentication: ' . $e->getMessage());
         }
     } catch (Exception $e) {
         error_log('[AUTOCONFIG] Skipping "imaginary" configuration: ' . $e->getMessage());
@@ -239,4 +240,91 @@ try {
     writeConfigFile($file, $config);
 } catch (Exception $e) {
     error_log('[AUTOCONFIG] Skipping preview configuration: ' . $e->getMessage());
+}
+
+// Memcache configuration
+try {
+    $file = OC::$SERVERROOT.'/config/memcache.config.php';
+
+    // TODO test whether "acpu" for memcache.local is any faster than redis
+    $config = ['memcache.local' => '\OC\Memcache\Redis'];
+
+    $redisHost = getValidEnv('REDIS_HOST', null, $STRING);
+    $redisPort = getValidEnv('REDIS_PORT', null, $PORT);
+    $redisSeeds = null;
+
+    try {
+        $redisSeeds = getValidEnv('REDIS_SEEDS', null, $STRING);
+    } catch (Exception $e) {
+        error_log('[AUTOCONFIG] Skipping Redis clustered setup: ' . $e->getMessage());
+    }
+    // Ensure Redis configuration is valid: Either host and port or seeds must be set, but not both
+    if ((!empty($redisHost) && !empty($redisPort)) xor (!empty($redisSeeds))) {
+        $config = array_merge($config, [
+            'memcache.locking' => '\OC\Memcache\Redis',
+            'memcache.distributed' => '\OC\Memcache\Redis',
+        ]);
+
+        // Shared config between single and multi node redis setup
+        $conf = [
+            'timeout' => 1.5,
+            'read_timeout' => 1.5,
+        ];
+
+        // Redis Authentication (optional, depending on environment variables)
+        try {
+            $conf = array_merge($conf, [
+                    'user' => getValidEnv('REDIS_USER', null, $STRING),
+                    'password' => getValidEnv('REDIS_PASSWORD', null, $STRING),
+            ]);
+        } catch (Exception $e) {
+            error_log('[AUTOCONFIG] [OPTIONAL] Skipping Redis authentication: ' . $e->getMessage());
+        }
+
+        // SSL context configuration for Redis (optional, depends on environment variables)
+        try {
+            $redisCert = getValidEnv('REDIS_CERT', null, $UNIX_PATH);
+            $redisKey = getValidEnv('REDIS_KEY', null, $UNIX_PATH);
+            if (is_readable($redisCert) && is_readable($redisKey)) {
+                $conf['ssl_context'] = [
+                    'local_cert' => $redisCert,
+                    'local_pk' => $redisKey,
+                ];
+                try {
+                    $redisCA = getValidEnv('REDIS_CA', null, $UNIX_PATH);
+                    if (is_readable($redisCA)) {
+                        $conf['ssl_context']['cafile'] = $redisCA;
+                    }
+                } catch (Exception $e) {
+                    error_log('[AUTOCONFIG] [OPTIONAL] Skipping Redis CA configuration: ' . $e->getMessage());
+                }
+            }
+        } catch (Exception $e) {
+            error_log('[AUTOCONFIG] [OPTIONAL] Skipping Redis SSL configuration: ' . $e->getMessage());
+        }
+
+        // Configuration for Redis Cluster (with seeds) or single Redis host
+        if (!empty($redisSeeds)) {
+            $config['redis.cluster']['seeds'] = array_filter(array_map('trim', explode(' ', $redisSeeds)));
+            $config['redis.cluster']['failover_mode'] = \RedisCluster::FAILOVER_ERROR;
+            $config['redis.cluster'] = array_merge($config['redis.cluster'], $conf);
+        } else {
+            $config['redis']['host'] = $redisHost;
+            // If host address is a unix socket then port must be set to 0
+            $config['redis']['port'] = preg_match($UNIX_PATH, $redisHost) ? 0 : $redisPort;
+            // Redis DB index (optional, if undefined SELECT will not run and will use Redis Server's default DB Index.)
+            try {
+                $conf['dbindex'] = intval(getValidEnv('REDIS_DB_INDEX', null, $INTEGER));
+            } catch (Exception $e) {
+                error_log('[AUTOCONFIG] [OPTIONAL] Skipping Redis DB Index: ' . $e->getMessage());
+            }
+            $config['redis'] = array_merge($config['redis'], $conf);
+        }
+    } else {
+        throw new Exception("Invalid Redis configuration: Either specify host and port or seeds, but not both.");
+    }
+
+    writeConfigFile($file, $config);
+} catch (Exception $e) {
+    error_log('[AUTOCONFIG] Skipping memcache configuration: ' . $e->getMessage());
 }
