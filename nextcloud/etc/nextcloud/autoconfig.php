@@ -152,6 +152,8 @@ try {
         'skeletondirectory' => getValidEnv("SKELETON_DIRECTORY", OC::$SERVERROOT.'/core/skeleton', $UNIX_PATH),
         'upgrade.disable-web' => getValidEnv("DISABLE_WEB_UPGRADE", true),
         'knowledgebaseenabled' => getValidEnv("KNOWLEDGEBASE_ENABLED", false),
+        'updatechecker' => false,
+        'check_for_working_htaccess' => false,
     ];
 
     writeConfigFile($file, $config);
