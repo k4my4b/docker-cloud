@@ -145,6 +145,8 @@ try {
 
     $config = [
         'server_root' => OC::$SERVERROOT,
+        'datadirectory' => getValidEnv("DATADIRECTORY", "/var/lib/nextcloud/data", $UNIX_PATH),
+        'logfile' => getValidEnv("LOGFILE", "/var/lib/nextcloud/nextcloud.log", $UNIX_PATH),
         'default_language' => getValidEnv("DEFAULT_LANGUAGE", "en_GB", $IETF_BCP_47),
         'default_locale' => getValidEnv("DEFAULT_LOCALE", "en_GB", $IETF_BCP_47),
         'default_phone_region' => getValidEnv("DEFAULT_PHONE_REGION", "GB", $ISO_3166_1),
@@ -328,4 +330,27 @@ try {
     writeConfigFile($file, $config);
 } catch (Exception $e) {
     error_log('[AUTOCONFIG] Skipping memcache configuration: ' . $e->getMessage());
+}
+
+try {
+    $file = OC::$SERVERROOT.'/config/apps.config.php';
+
+    $config = [
+        'apps_paths' => [
+            0 => [
+                'path' => OC::$SERVERROOT.'/apps',
+                'url' => '/apps',
+                'writable' => false,
+            ],
+            1 => [
+                'path' => OC::$SERVERROOT.'/apps-appstore',
+                'url' => '/apps-appstore',
+                'writable' => true,
+            ],
+        ],
+    ];
+
+    writeConfigFile($file, $config);
+} catch (Exception $e) {
+    error_log('[AUTOCONFIG] Skipping apps configuration: ' . $e->getMessage());
 }
