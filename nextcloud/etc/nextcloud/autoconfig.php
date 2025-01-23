@@ -248,8 +248,7 @@ try {
 try {
     $file = OC::$SERVERROOT.'/config/memcache.config.php';
 
-    // TODO test whether "acpu" for memcache.local is any faster than redis
-    $config = ['memcache.local' => '\OC\Memcache\Redis'];
+    $config = ['memcache.local' => '\OC\Memcache\APCu'];
 
     $redisHost = getValidEnv('REDIS_HOST', null, $STRING);
     $redisPort = getValidEnv('REDIS_PORT', null, $PORT);

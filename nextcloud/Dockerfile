@@ -52,7 +52,7 @@ RUN apk add --no-cache \
     php82-openssl php82-posix php82-session php82-simplexml php82-xmlreader \
     php82-xmlwriter php82-zip php82-xml php82-pgsql php82-pdo \
     php82-pdo_pgsql php82-intl php82-sodium php82-pecl-redis \
-    php82-ldap php82-pecl-smbclient php82-ftp php82-imap \
+    php82-ldap php82-pecl-smbclient php82-ftp php82-imap php82-pecl-apcu \
     php82-bcmath php82-gmp php82-exif php82-sysvsem php82-pecl-imagick \
     imagemagick-svg ffmpeg jq curl pv ca-certificates && \
     rm -f /etc/php82/conf.d/* && \
