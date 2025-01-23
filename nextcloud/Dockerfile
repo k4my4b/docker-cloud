@@ -37,32 +37,47 @@ RUN mkdir -p /unit/unit /unit/njs && \
 FROM ghcr.io/k4my4b/base:latest
 
 # Setup and install nginx unit built in the previous stage
-RUN addgroup -S unit 2>/dev/null && \
-    adduser -S -D -H -h /var/lib/unit -s /sbin/nologin -G unit -g "NGINX Unit" unit 2>/dev/null && \
+RUN addgroup -S -g 101 unit; \
+    adduser -S -u 101 -D -H -h /var/lib/unit -s /sbin/nologin -G unit -g "NGINX Unit" unit; \
     mkdir -p /var/lib/unit /var/log/unit && \
     chown unit:unit /var/lib/unit /var/log/unit
 
 COPY --from=build /usr/local /usr/local
-COPY --from=build //usr/lib/libphp82.so /usr/lib/libphp82.so
+COPY --from=build /usr/lib/libphp82.so /usr/lib/libphp82.so
 
-# Install all necessary PHP packages and Nextcloud dependencies
+# Install Nextcloud and dependencies
 RUN apk add --no-cache \
-    php82-ctype php82-curl php82-dom \
-    php82-fileinfo php82-gd php82-mbstring php82-openssl \
-    php82-posix php82-session php82-simplexml php82-xmlreader \
+    php82 php82-opcache php82-pcntl php82-iconv php82-ctype \
+    php82-curl php82-dom php82-fileinfo php82-gd php82-mbstring \
+    php82-openssl php82-posix php82-session php82-simplexml php82-xmlreader \
     php82-xmlwriter php82-zip php82-xml php82-pgsql php82-pdo \
     php82-pdo_pgsql php82-intl php82-sodium php82-pecl-redis \
     php82-ldap php82-pecl-smbclient php82-ftp php82-imap \
     php82-bcmath php82-gmp php82-exif php82-sysvsem php82-pecl-imagick \
-    imagemagick-svg ffmpeg nextcloud-files_trashbin \
-    nextcloud jq nextcloud-default-apps curl && \
+    imagemagick-svg ffmpeg jq curl pv ca-certificates && \
     rm -f /etc/php82/conf.d/* && \
-    find /usr/share/webapps/nextcloud/core/skeleton -mindepth 1 -delete
+    addgroup -S -g 82 www-data; \
+    adduser -S -u 100 -D -H -h /var/lib/nextcloud -s /sbin/nologin -G www-data -g Nextcloud nextcloud; \
+    mkdir -p /usr/share/webapps; \
+    curl -sfL https://download.nextcloud.com/server/releases/latest-27.tar.bz2 | \
+    tar --exclude='nextcloud/apps/support' \
+        --exclude='nextcloud/apps/firstrunwizard' \
+        --exclude='nextcloud/apps/updatenotification' \
+        --exclude='nextcloud/config/config.php' \
+        -vxj -C /usr/share/webapps/ && \
+    chown --recursive nextcloud:www-data /usr/share/webapps/nextcloud && \
+    ln -sf /usr/share/webapps/nextcloud/config /etc/nextcloud && \
+    chmod +x /usr/share/webapps/nextcloud/occ && \
+    ln -sf /usr/share/webapps/nextcloud/occ /usr/local/bin/_occ && \
+    mkdir -p /var/lib/nextcloud/apps /var/lib/nextcloud/data && \
+    ln -sf /var/lib/nextcloud/apps /usr/share/webapps/nextcloud/apps-appstore && \
+    chown --recursive nextcloud:www-data /var/lib/nextcloud
 
 # Copy custom configuration and scripts
 COPY --chmod=775 init.d /init.d
 COPY --chmod=775 healthcheck.d /healthcheck.d
 COPY --chown=100:82 usr/share/webapps/nextcloud /usr/share/webapps/nextcloud
+COPY --chmod=755 usr/local /usr/local
 COPY etc/crontabs /etc/crontabs
 COPY etc/php82 /etc/php82
 COPY --chmod=660 --chown=100:82 etc/nextcloud /etc/nextcloud

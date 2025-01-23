@@ -1,0 +1,7 @@
+#!/bin/sh
+
+NC_USER=$(stat -c "%U" /etc/nextcloud/config.php 2>/dev/null) || NC_USER="nextcloud"
+
+# shellcheck disable=SC2016
+test "$(id -un)" != "$NC_USER" && exec su "$NC_USER" -s /bin/sh -c '$0 "$@"' -- "$0" "$@"
+exec _occ "$@"
