@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check if required commands are available
-command -v occ > /dev/null || { echo "command not found: occ "; exit 1; }
-command -v jq > /dev/null || { echo "command not found: jq"; exit 1; }
-command -v curl > /dev/null || { echo "command not found: curl"; exit 1; }
+for cmd in "jq" "curl"; do
+    command -v "$cmd" > /dev/null || { echo "command not found: $cmd"; exit 1; }
+done
 
 echo "Starting unitd"
 # Start unitd in the background
@@ -22,11 +22,6 @@ test -d /proc/$UNITD_PID && {
     RESPONSE="$(curl -sX PUT --data-binary "@$UNITD_CONFIG" localhost:9000/config/)"
     echo "$RESPONSE" | jq -e '.success' > /dev/null && {
         echo "Nextcloud started successfully"
-        while test "$(occ status --no-warnings --output=json | jq -r '.installed')" != "true"; do
-            echo "Nextcloud is not installed! Waiting ..."
-            sleep 5
-        done
-        echo "Nextcloud is installed!"
         exit 0
     }
     echo "$RESPONSE"
