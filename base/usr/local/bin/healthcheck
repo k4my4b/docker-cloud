@@ -1,0 +1,61 @@
+#!/usr/bin/sh
+
+# Log an error message to stderr and exit with status 1.
+error_log() {
+    MSG="${*:?Internal error: no error message received}"
+    echo "Container Health Monitor: $MSG" >&2
+    exit 1
+}
+
+# Check if required commands are available
+command -v mkfifo > /dev/null || {
+    error_log "Command not found: mkfifo"
+}
+command -v timeout > /dev/null || {
+    error_log "Command not found: timeout"
+}
+command -v /usr/local/bin/run-parts > /dev/null || {
+    error_log "Command not found: /usr/local/bin/run-parts"
+}
+
+# Ensure a valid directory has been passed in
+test -d "$1" || {
+    error_log "Valid directory expected"
+}
+
+# Ensure we have a valid named pipe to work with
+: "${HEALTHCHECK_PIPE:=/dev/healthcheck}"
+PIPE=$(mkfifo "$HEALTHCHECK_PIPE" && echo "$HEALTHCHECK_PIPE") || {
+    error_log "Failed to make named pipe"
+}
+
+# Not necessary but it's good hygine to cleanup
+trap 'rc=$?; rm -f "$PIPE"; exit $rc' EXIT TERM INT HUP
+
+# If no process has opened the pipe for reading, the write call will
+# block without consuming significant CPU cycles. The kernel
+# suspends the process until a reader appears, so the process isn’t
+# busy-waiting (which would use CPU time)—it’s simply inactive
+# until it can proceed.
+while :
+do
+    # We have to get creative here because ash export doesn't support -f
+    # and patching ash exportcmd is more work than just accepting this.
+    # overall what's happening here is we're blocking until pipe is
+    # opened for reading at which point we run our scripts and then close
+    # the pipe to signal the reader of the end.
+    timeout "${HEALTHCHECK_TMAX:=300}" sh -c '
+        exec 3>"$1"
+        /usr/local/bin/run-parts "$2"
+        echo "$?" >&3
+        exec 3>&-
+    ' -- "$PIPE" "$1" || {
+        test $? -eq 143 && {
+            error_log "No health monitoring agent configured or interval" \
+                      "exceeded ${HEALTHCHECK_TMAX}s. Adjust via HEALTHCHECK_TMAX."
+        }
+    }
+done
+
+# If execution ever reaches this point, it indicates an unexpected failure.
+exit 1

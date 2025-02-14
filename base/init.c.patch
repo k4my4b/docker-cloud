@@ -1,0 +1,36 @@
+--- init/init.c	2021-12-26 16:53:20.000000000 +0000
++++ ../init.c	2025-02-04 02:08:09.911119754 +0000
+@@ -762,7 +762,7 @@
+ 	 * shut things down gracefully... */
+ 	run_actions(SHUTDOWN);
+ 
+-	message(L_CONSOLE | L_LOG, "The system is going down NOW!");
++	message(L_CONSOLE | L_LOG, "The container is going down NOW!");
+ 
+ 	/* Send signals to every process _except_ pid 1 */
+ 	kill(-1, SIGTERM);
+@@ -810,7 +810,6 @@
+ static void halt_reboot_pwoff(int sig) NORETURN;
+ static void halt_reboot_pwoff(int sig)
+ {
+-	const char *m;
+ 	unsigned rb;
+ 
+ 	/* We may call run() and it unmasks signals,
+@@ -823,16 +822,12 @@
+ 
+ 	run_shutdown_and_kill_processes();
+ 
+-	m = "halt";
+ 	rb = RB_HALT_SYSTEM;
+ 	if (sig == SIGTERM) {
+-		m = "reboot";
+ 		rb = RB_AUTOBOOT;
+ 	} else if (sig == SIGUSR2) {
+-		m = "poweroff";
+ 		rb = RB_POWER_OFF;
+ 	}
+-	message(L_CONSOLE, "Requesting system %s", m);
+ 	pause_and_low_level_reboot(rb);
+ 	/* not reached */
+ }
