@@ -12,7 +12,7 @@ cron() {
   fi
 
   while true; do
-    if ! php -f /var/www/html/cron.php; then
+    if ! php -f /usr/share/webapps/nextcloud/cron.php; then
       echo "Something went wrong with cron.php, will try again in ${SLEEP_DURATION}"
     fi
     sleep "${SLEEP_DURATION}"

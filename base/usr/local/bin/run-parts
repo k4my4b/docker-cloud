@@ -1,0 +1,46 @@
+#!/usr/bin/sh
+
+# Check if required commands are available
+for cmd in "find" "awk" "sort" "xargs"; do
+    command -v "$cmd" > /dev/null || { echo "command not found: $cmd"; exit 1; }
+done
+
+# Require a directory
+DIR="${1:?Where are the scripts/hooks?}"
+
+# Find and sort scripts
+find "$DIR" -type f -executable -name '[0-9]?-*' | sort -V | \
+# Group the scripts of the same priority together
+awk '
+{
+    split($0, arr, "/")
+    file = arr[length(arr)]
+    num = substr(file, 1, index(file, "-") - 1)
+    if (num != prev) {
+        if (NR > 1) {
+            print ""
+        }
+        prev = num
+    }
+    printf "%s ", $0
+}
+END { print "" }
+' | \
+# Execute scripts of the same priority (same group) in parallel
+# Exit if any script in the group fails
+while IFS= read -r scripts; do
+    [ -z "$scripts" ] && continue
+    # Use xargs to run all scripts in the group in parallel
+    echo "$scripts" | xargs -n1 -P0 sh -c '
+        if ! "$1"; then
+            exit 1  # Signal failure to xargs
+        fi
+    ' sh
+    # Check if any command in the group failed
+    if [ $? -ne 0 ]; then
+        # Send termination signal
+        exit 1
+    fi
+done
+
+exit $?

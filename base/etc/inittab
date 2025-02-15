@@ -1,0 +1,20 @@
+# /etc/inittab init(8) configuration for BusyBox
+#
+# Format for each entry: <id>:<runlevels>:<action>:<process>
+#
+# id        = leave empty for /dev/console
+# runlevels = ignored
+# action    = sysinit, respawn, askfirst, wait, once, restart, ctrlaltdel or shutdown.
+# process   = program to run
+
+# Batch and run startup scripts in parallel (grouped by prefix) during container initialisation
+::sysinit:sh -c "/usr/local/bin/run-parts /etc/init.d/start || kill -USR2 1"
+
+# Start the container health monitor once the container is initialised and keep it alive
+::respawn:/usr/local/bin/healthcheck /etc/healthcheck.d
+
+# Batch and run shutdown scripts in parallel (grouped by prefix) before the container shuts down
+::shutdown:/usr/local/bin/run-parts /etc/init.d/stop
+
+# Handle Ctrl+Alt+Del (Ctrl+C) to trigger a shutdown
+::ctrlaltdel:/usr/bin/sh -c "echo -ne '\r\033[K'; echo 'Received shutdown request.'; kill -USR2 1"

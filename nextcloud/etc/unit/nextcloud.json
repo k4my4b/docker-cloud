@@ -1,0 +1,162 @@
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes",
+            "forwarded": {
+                "protocol": "X-Forwarded-Proto",
+                "client_ip": "X-Forwarded-For",
+                "source": [
+                    "10.0.0.0/8",
+                    "172.16.0.0/12",
+                    "192.168.0.0/16"
+                ]
+            }
+        }
+    },
+    "routes": [
+        {
+            "match": {
+                "uri": [
+                    "/.well-known/carddav",
+                    "/.well-known/caldav"
+                ]
+            },
+            "action": {
+                "return": 301,
+                "location": "/remote.php/dav/"
+            }
+        },
+        {
+            "match": {
+                "uri": [
+                    "/.well-known/webfinger",
+                    "/.well-known/nodeinfo"
+                ]
+            },
+            "action": {
+                "return": 301,
+                "location": "/index.php$uri"
+            }
+        },
+        {
+            "match": {
+                "uri": "/.well-known/*"
+            },
+            "action": {
+                "pass": "applications/nextcloud/index"
+            }
+        },
+        {
+            "match": {
+                "uri": [
+                    "~^/(?:build|tests|config|lib|3rdparty|templates|data)(?:$|/)",
+                    "~^/(?:\\.|autotest|occ|issue|indie|db_|console)"
+                ]
+            },
+            "action": {
+                "pass": "applications/nextcloud/index"
+            }
+        },
+        {
+            "match": {
+                "uri": [
+                    "/core/ajax/update.php*",
+                    "/cron.php*",
+                    "/ocs-provider*.php*",
+                    "/ocs/v1.php*",
+                    "/ocs/v2.php*",
+                    "/public.php*",
+                    "/remote.php*",
+                    "/status.php*",
+                    "/updater*.php*"
+                ]
+            },
+            "action": {
+                "pass": "applications/nextcloud/direct"
+            }
+        },
+        {
+            "match": {
+                "uri": "/ocs-provider*"
+            },
+            "action": {
+                "pass": "applications/nextcloud/ocs"
+            }
+        },
+        {
+            "match": {
+                "uri": "~^(/|/index\\.php|/index\\.php/.*)$"
+            },
+            "action": {
+                "pass": "applications/nextcloud/index"
+            }
+        },
+        {
+            "match": {
+                "uri": [
+                    "~\\.(?:css|js|mjs|svg|gif|ico|jpg|png|webp|wasm|tflite|map|ogg|flaac|otf|woff2?)$"
+                ]
+            },
+            "action": {
+                "share": "/usr/share/webapps/nextcloud$uri",
+                "fallback": {
+                    "pass": "applications/nextcloud/index"
+                },
+                "response_headers": {
+                    "Cache-Control": "`public, max-age=15778463${vars.arg_v ? ', immutable' : ''}`",
+                    "Referrer-Policy": "no-referrer",
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "SAMEORIGIN",
+                    "X-Permitted-Cross-Domain-Policies": "none",
+                    "X-Robots-Tag": "noindex, nofollow",
+                    "X-XSS-Protection": "1; mode=block"
+                }
+            }
+        },
+        {
+            "action": {
+                "share": "/usr/share/webapps/nextcloud$uri",
+                "fallback": {
+                    "pass": "applications/nextcloud/index"
+                }
+            }
+        }
+    ],
+    "applications": {
+        "nextcloud": {
+            "type": "php",
+            "user": "nextcloud",
+            "group": "www-data",
+            "options": {
+                "file": "/etc/php82/php.ini"
+            },
+            "processes": {
+                "max": 500,
+                "spare": 6,
+                "idle_timeout": 30
+            },
+            "targets": {
+                "direct": {
+                    "root": "/usr/share/webapps/nextcloud/"
+                },
+                "index": {
+                    "root": "/usr/share/webapps/nextcloud/",
+                    "script": "index.php"
+                },
+                "ocs": {
+                    "root": "/usr/share/webapps/nextcloud/ocs-provider/",
+                    "script": "index.php"
+                }
+            },
+            "environment": {
+                "front_controller_active": "true"
+            }
+        }
+    },
+    "settings": {
+        "http": {
+            "max_body_size": 10737418240,
+            "body_read_timeout": 3600
+        }
+    }
+}
