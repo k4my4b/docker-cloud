@@ -44,13 +44,15 @@ RUN set -eux; \
 # ----- Stage 2: Build a minimalistic base with BusyBox (glibc) -----
 FROM scratch
 
-COPY --from=build --chmod=755 --chown=0:0 /root/busybox/busybox /usr/bin/busybox
+COPY --from=build --chmod=755 --chown=0:0 /root/busybox/busybox /usr/local/bin/busybox
 COPY --chmod=755 etc /etc
 COPY --chmod=755 usr /usr
 
-SHELL ["/usr/bin/busybox", "sh", "-c"]
+SHELL ["/usr/local/bin/busybox", "sh", "-c"]
 
-RUN busybox --install -s /usr/bin && \
+RUN set -eux; \
+    mkdir -p /usr/bin; \
+    busybox --install -s /usr/bin && \
     mkdir -p /etc/healthcheck.d \
         /etc/init.d/start \
         /etc/init.d/stop
